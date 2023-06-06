@@ -3,10 +3,9 @@
 //import javax.swing.border.Border;
 
 public class Main {
-
     public static void main(String[] args) {
-        new MainMenu();
-//        new ConverterApp();
-    }
 
+        new MainMenu();
+
+    }
 }

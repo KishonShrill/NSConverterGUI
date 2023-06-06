@@ -1,9 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class MainMenu {
+public class MainMenu implements ActionListener {
 
-    /* - - - - - Instances - - - - - */
+    /* - - - - - Initiations - - - - - */
     //Frame and Panels
     JFrame jFrame = new JFrame("Main menu for the Number System Converter");
     JPanel header = new JPanel();
@@ -11,13 +13,14 @@ public class MainMenu {
     JPanel center = new JPanel();
 
     //Buttons - For the Main Menu
-    JButton Convert = new JButton("Start");
-    JButton Help = new JButton("Instructions");
-    JButton Examples = new JButton("Examples");
-    JButton Credits = new JButton("Credits");
-    JButton Exit = new JButton("Exit");
+    JButton convert = new JButton("Start");
+    JButton help = new JButton("Instructions");
+    JButton examples = new JButton("Examples");
+    JButton credits = new JButton("Credits");
+    JButton exit = new JButton("Exit");
 
     GridBagConstraints main_menu = new GridBagConstraints();
+    GridBagConstraints title_bar = new GridBagConstraints();
 
     MainMenu() {
         Setup();
@@ -34,6 +37,7 @@ public class MainMenu {
         jFrame.setResizable(false);
         jFrame.setTitle("Number System - Main Menu");
 //      jFrame.pack();                      [somehow it minimizes the window]
+        jFrame.setLocationRelativeTo(null); // this method will display the JFrame to center position of a screen
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -53,7 +57,20 @@ public class MainMenu {
     }
 
     private void Header() {
-//        header.setLayout(new );
+        header.setLayout(new GridBagLayout());
+        title_bar.insets = new Insets(0,0,2,0);
+
+        JLabel title = new JLabel("Number System");
+        title_bar.gridy = 0;
+        title.setFont(new Font("Arial", Font.PLAIN, 38));
+        title.setForeground(Color.WHITE);
+        header.add(title, title_bar);
+
+        JLabel description = new JLabel("Calculator Converter for Nerds!");
+        title_bar.gridy = 1;
+        description.setFont(new Font("Arial", Font.PLAIN, 20));
+        description.setForeground(Color.lightGray);
+        header.add(description, title_bar);
     }
 
     private void MainMenuButtons() {
@@ -62,37 +79,50 @@ public class MainMenu {
 
         main_menu.gridx = 0;
         main_menu.gridy = 0;
-        Convert.setPreferredSize(new Dimension(150,50));
-        Convert.setFont(new Font("Arial", Font.PLAIN, 20));
-        Convert.setFocusable(false);
-        center.add(Convert, main_menu);
+        convert.setPreferredSize(new Dimension(150,50));
+        convert.setFont(new Font("Arial", Font.PLAIN, 20));
+        convert.setFocusable(false);
+        convert.addActionListener(this);
+        center.add(convert, main_menu);
 
         main_menu.gridx = 0;
         main_menu.gridy = 1;
-        Help.setPreferredSize(new Dimension(150,50));
-        Help.setFont(new Font("Arial", Font.PLAIN, 20));
-        Help.setFocusable(false);
-        center.add(Help, main_menu);
+        help.setPreferredSize(new Dimension(150,50));
+        help.setFont(new Font("Arial", Font.PLAIN, 20));
+        help.setFocusable(false);
+        help.addActionListener(this);
+        center.add(help, main_menu);
 
         main_menu.gridx = 0;
         main_menu.gridy = 2;
-        Examples.setPreferredSize(new Dimension(150,50));
-        Examples.setFont(new Font("Arial", Font.PLAIN, 20));
-        Examples.setFocusable(false);
-        center.add(Examples, main_menu);
+        examples.setPreferredSize(new Dimension(150,50));
+        examples.setFont(new Font("Arial", Font.PLAIN, 20));
+        examples.setFocusable(false);
+        examples.addActionListener(this);
+        center.add(examples, main_menu);
 
         main_menu.gridx = 0;
         main_menu.gridy = 3;
-        Credits.setPreferredSize(new Dimension(150,50));
-        Credits.setFont(new Font("Arial", Font.PLAIN, 20));
-        Credits.setFocusable(false);
-        center.add(Credits, main_menu);
+        credits.setPreferredSize(new Dimension(150,50));
+        credits.setFont(new Font("Arial", Font.PLAIN, 20));
+        credits.setFocusable(false);
+        credits.addActionListener(this);
+        center.add(credits, main_menu);
 
         main_menu.gridx = 0;
         main_menu.gridy = 4;
-        Exit.setPreferredSize(new Dimension(150,50));
-        Exit.setFont(new Font("Arial", Font.PLAIN, 20));
-        Exit.setFocusable(false);
-        center.add(Exit, main_menu);
+        exit.setPreferredSize(new Dimension(150,50));
+        exit.setFont(new Font("Arial", Font.PLAIN, 20));
+        exit.setFocusable(false);
+        exit.addActionListener(this);
+        center.add(exit, main_menu);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == convert) {
+            jFrame.dispose();
+            new ConverterApp();
+        }
     }
 }
