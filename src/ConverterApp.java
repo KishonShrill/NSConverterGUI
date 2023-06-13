@@ -1,17 +1,21 @@
 import javax.swing.*;
-import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConverterApp implements ActionListener {
 
     /* - - - - - Initiations - - - - - */
     //Frame and Panels
     JFrame jFrame = new JFrame("Main menu for the Number System Converter");
-    JPanel header = new JPanel();
-    JPanel footer = new JPanel();
-    JPanel center = new JPanel();
+    JTabbedPane tabbedMenu = new JTabbedPane();
+    JPanel firstTab = new JPanel();
+    JPanel secondTab = new JPanel();
+    JPanel firstHeader, firstFooter, firstCenter;
+    JPanel secondHeader, secondFooter, secondCenter;
 
     //Buttons - For the Main Menu
     JButton play = new JButton("Convert");
@@ -36,7 +40,8 @@ public class ConverterApp implements ActionListener {
     //SETUP (just like Processing)
     ConverterApp(){
         Setup();
-        Design();
+        firstDesign();
+        secondDesign();
         ConverterHeader();
         ConverterContent();
         jFrame.setVisible(true);
@@ -44,48 +49,82 @@ public class ConverterApp implements ActionListener {
 
     private void Setup() {
         //SETUP (just like Processing)
-        jFrame.setLayout(new BorderLayout(10,0));
         jFrame.setSize(420, 630);
         jFrame.setResizable(false);
-        jFrame.setTitle("Number System - Main Menu");
-//      jFrame.pack();                      [somehow it minimizes the window]
+        jFrame.setTitle("Number System - Converter");
         jFrame.setLocationRelativeTo(null); // this method will display the JFrame to center position of a screen
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // FIRST TAB
+        firstTab.setLayout(new BorderLayout(10,0));
+        secondTab.setLayout(new BorderLayout(10,0));
+
+        //        firstTab.setSize(420, 630);
+
+        tabbedMenu.add("Converter",firstTab);
+        tabbedMenu.add("Thread", secondTab);
+        jFrame.add(tabbedMenu);
+
     }
 
-    private void Design() {
+    private void firstDesign() {
+        //Init
+        firstHeader = new JPanel();
+        firstFooter = new JPanel();
+        firstCenter = new JPanel();
+
         //Background Colors - Panels
-        header.setBackground(Color.darkGray);
-        footer.setBackground(Color.lightGray);
+        firstHeader.setBackground(Color.darkGray);
+        firstFooter.setBackground(Color.lightGray);
 
         //Setting Size - Panels
-        header.setPreferredSize(new Dimension(0,120));
-        footer.setPreferredSize(new Dimension(0, 25));
+        firstHeader.setPreferredSize(new Dimension(0,120));
+        firstFooter.setPreferredSize(new Dimension(0, 25));
 
         //Setting Positions - Panels
-        jFrame.add(header, BorderLayout.NORTH);
-        jFrame.add(footer, BorderLayout.SOUTH);
-        jFrame.add(center, BorderLayout.CENTER);
+        firstTab.add(firstHeader, BorderLayout.NORTH);
+        firstTab.add(firstFooter, BorderLayout.SOUTH);
+        firstTab.add(firstCenter, BorderLayout.CENTER);
+    }
+    private void secondDesign() {
+        //Init
+        secondHeader = new JPanel();
+        secondFooter = new JPanel();
+        secondCenter = new JPanel();
+
+        //Background Colors - Panels
+        secondHeader.setBackground(Color.darkGray);
+        secondFooter.setBackground(Color.lightGray);
+
+        //Setting Size - Panels
+        secondHeader.setPreferredSize(new Dimension(0,120));
+        secondFooter.setPreferredSize(new Dimension(0, 25));
+
+        //Setting Positions - Panels
+        secondTab.add(secondHeader, BorderLayout.NORTH);
+        secondTab.add(secondFooter, BorderLayout.SOUTH);
+        secondTab.add(secondCenter, BorderLayout.CENTER);
     }
 
     private void ConverterHeader() {
-        header.setLayout(new BorderLayout());
+        firstHeader.setLayout(new BorderLayout());
         converter_bar.insets = new Insets(0,0,0,0);
 
         JPanel header_title = new JPanel();
             header_title.setPreferredSize(new Dimension(0,60));
             header_title.setLayout(new GridBagLayout());
             header_title.setBackground(Color.darkGray);
-        header.add(header_title, BorderLayout.NORTH);
+        firstHeader.add(header_title, BorderLayout.NORTH);
                 //TODO: Put some title wordings here
 
 
 
         JPanel header_content = new JPanel();
+            header_content.setBorder(new EmptyBorder(0,10,0,10));
             header_content.setPreferredSize(new Dimension(0,50));
             header_content.setLayout(new GridBagLayout());
             header_content.setBackground(Color.white);
-        header.add(header_content, BorderLayout.SOUTH);
+        firstHeader.add(header_content, BorderLayout.SOUTH);
 
             converter_bar.gridx = converter_bar.gridy = 0;
             converter_bar.weightx = 20;
@@ -108,13 +147,13 @@ public class ConverterApp implements ActionListener {
 
     private void ConverterContent() {
         JPanel binBox, octBox, decBox, hexBox, emptyBox, buttonBox;
-        center.setLayout(new BorderLayout());
+        firstCenter.setLayout(new BorderLayout());
 
         JPanel center_content = new JPanel();
             center_content.setPreferredSize(new Dimension(0,140));
             center_content.setLayout(new BoxLayout(center_content, BoxLayout.PAGE_AXIS));
 //            center_content.setBackground(Color.blue); //DELETE LATER!!!
-        center.add(center_content, BorderLayout.NORTH);
+        firstCenter.add(center_content, BorderLayout.NORTH);
 
         /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
         emptyBox = new JPanel();
@@ -164,15 +203,14 @@ public class ConverterApp implements ActionListener {
         center_content.add(buttonBox);
     }
     
-    private int nsPickerChanger(int numbersystemPicker){
-        int answer = switch (numbersystemPicker) {
+    private int nsPickerChanger(int numbersystemPicker) throws IllegalStateException {
+        return switch (numbersystemPicker) {
             case 0 -> 2;
             case 1 -> 8;
             case 2 -> 10;
             case 3 -> 16;
             default -> throw new IllegalStateException("Unexpected value: " + numbersystemPicker);
         };
-        return answer;
     }
 
     //SETTER & GETTER
@@ -181,6 +219,27 @@ public class ConverterApp implements ActionListener {
 //    public void setOct(String oct) {this.octOutput = oct;}
 //    public void setDec(String dec) {this.decOutput = dec;}
 //    public void setHex(String hex) {this.hexOutput = hex;}
+
+    public static boolean isBinary(String data) {
+        Pattern pattern = Pattern.compile("[01]+");
+        Matcher matcher = pattern.matcher(data);
+        return matcher.matches();
+    }
+    public static boolean isOctal(String data) {
+        Pattern pattern = Pattern.compile("[0-7]+");
+        Matcher matcher = pattern.matcher(data);
+        return matcher.matches();
+    }
+    public static boolean isDecimal(String data) {
+        Pattern pattern = Pattern.compile("[0-9]+");
+        Matcher matcher = pattern.matcher(data);
+        return matcher.matches();
+    }
+    public static boolean isHexadecimal(String data) {
+        Pattern pattern = Pattern.compile("[0-9A-Fa-f]+");
+        Matcher matcher = pattern.matcher(data);
+        return matcher.matches();
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -200,6 +259,13 @@ public class ConverterApp implements ActionListener {
 //
             hexOutput = CHANGEME.convertToHEX(TBConverted.getText());
             showHexAns.setText(hexOutput);
+
+            //Setting JTextArea to '0' to ensure you can still click on the text area
+            String input = TBConverted.getText();  // Get the text from the JTextArea
+            if (input.isEmpty()) {
+                input = "0";  // Set the input to "0" if it is empty
+                TBConverted.setText(input);
+            }
 
         }
     }

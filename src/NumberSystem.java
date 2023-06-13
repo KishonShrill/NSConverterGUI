@@ -33,38 +33,54 @@ public class NumberSystem {
    */
   public String convertToBIN(String input) {
     int convertToBase = 2;
-    int decimal = 0;
 
-    try { //CHECK FOR ERRORS
-      if (isHexadecimalSTRICT(userInput) || base == 16) {
-        decimal = Integer.parseInt(input, 16);
-      } else {
-        decimal = Integer.parseInt(input, base);
-      }
-    } catch (NumberFormatException e) {
-      System.out.println("Entered input is TOO HIGH of a number."); //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
-    }
+    if (input.isEmpty() == false) {
+      int decimal = Integer.parseInt(input);
+      if (decimal != 0) {
+        try { //CHECK FOR ERRORS
 
-    bin = convertDecimalToOther(decimal, convertToBase);
+          if (isHexadecimalSTRICT(userInput) || base == 16)
+          {
+            decimal = Integer.parseInt(input, 16);
+          }
+          else
+          {
+            decimal = Integer.parseInt(input, base);
+          }
+
+        }
+        catch (NumberFormatException e) {System.out.println("Entered input is TOO HIGH of a number.");} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
+
+        bin = convertDecimalToOther(decimal, convertToBase);
+      } else {bin = "0";}
+    } else {bin = "0";}
+
     return bin;
   }
 
   public String convertToOCT(String input) {
     int convertToBase = 8;
-    int decimal = 0;
 
-    try { //CHECK FOR ERRORS
-      if (isHexadecimalSTRICT(userInput) || base == 16) {
-        decimal = Integer.parseInt(input, 16);
-      } else {
-        decimal = Integer.parseInt(input, base);
-      }
-    } catch (NumberFormatException e) {
-      System.out.println("Entered input is TOO HIGH of a number.");
-    }
+    if (input.isEmpty() == false) {
+      int decimal = Integer.parseInt(input);
+      if (decimal != 0) {
+        try { //CHECK FOR ERRORS
 
-    /* CONVERTING AREA */
-    oct = convertDecimalToOther(decimal, convertToBase);
+          if (isHexadecimalSTRICT(userInput) || base == 16)
+          {
+            decimal = Integer.parseInt(input, 16);
+          }
+          else
+          {
+            decimal = Integer.parseInt(input, base);
+          }
+
+        }
+        catch (NumberFormatException e) {System.out.println("Entered input is TOO HIGH of a number.");} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
+
+        oct = convertDecimalToOther(decimal, convertToBase);
+      } else {oct = "0";}
+    } else {oct = "0";}
 
     return oct;
   }
@@ -82,30 +98,33 @@ public class NumberSystem {
     }
 
     /* CONVERTING AREA */
-    if (base == 16) {
-      dec = Integer.toString(decimal);
-    } else {
-      dec = String.valueOf(decimal);
-    }
+    dec = String.valueOf(decimal);
 
     return dec;
   }
   public String convertToHEX(String input) {
     int convertToBase = 16;
-    int decimal = 0;
 
-    try { //CHECK FOR ERRORS
-      if (isHexadecimalSTRICT(userInput) || base == 16) {
-        decimal = Integer.parseInt(input, 16);
-      } else {
-        decimal = Integer.parseInt(input, base);
-      }
-    } catch (NumberFormatException e) {
-      System.out.println("Entered input is TOO HIGH of a number.");
-    }
+    if (input.isEmpty() == false) {
+      int decimal = Integer.parseInt(input);
+      if (decimal != 0) {
+        try { //CHECK FOR ERRORS
 
-    /* CONVERTING AREA */
-    hex = convertDecimalToOther(decimal, convertToBase);
+          if (isHexadecimalSTRICT(userInput) || base == 16)
+          {
+            decimal = Integer.parseInt(input, 16);
+          }
+          else
+          {
+            decimal = Integer.parseInt(input, base);
+          }
+
+        }
+        catch (NumberFormatException e) {System.out.println("Entered input is TOO HIGH of a number.");} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
+
+        hex = convertDecimalToOther(decimal, convertToBase);
+      } else {hex = "0";}
+    } else {hex = "0";}
 
     return hex;
   }
@@ -152,26 +171,6 @@ public class NumberSystem {
    * @param data the string to be checked
    * @return true if the string represents an octal number, false otherwise
    */
-  public static boolean isBinary(String data) {
-    Pattern pattern = Pattern.compile("[01]+");
-    Matcher matcher = pattern.matcher(data);
-    return matcher.matches();
-  }
-  public static boolean isOctal(String data) {
-    Pattern pattern = Pattern.compile("[0-7]+");
-    Matcher matcher = pattern.matcher(data);
-    return matcher.matches();
-  }
-  public static boolean isDecimal(String data) {
-    Pattern pattern = Pattern.compile("[0-9]+");
-    Matcher matcher = pattern.matcher(data);
-    return matcher.matches();
-  }
-  public static boolean isHexadecimal(String data) {
-    Pattern pattern = Pattern.compile("[0-9A-Fa-f]+");
-    Matcher matcher = pattern.matcher(data);
-    return matcher.matches();
-  }
   public static boolean isHexadecimalSTRICT(String data) {
     Pattern pattern = Pattern.compile("[A-Fa-f]+");
     Matcher matcher = pattern.matcher(data);
