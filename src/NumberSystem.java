@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class NumberSystem {
   private String userInput = "";
   private int base = 0;
-  private int conversion;
+  public int conversion;
   public String bin = "", oct = "", dec = "", hex = "";
   private static final int DECIMAL_NUM = 10;
 
@@ -35,7 +35,7 @@ public class NumberSystem {
     int convertToBase = 2;
 
     if (input.isEmpty() == false) {
-      int decimal = Integer.parseInt(input);
+      int decimal = Integer.parseInt(input, conversion);
       if (decimal != 0) {
         try { //CHECK FOR ERRORS
 
@@ -62,7 +62,7 @@ public class NumberSystem {
     int convertToBase = 8;
 
     if (input.isEmpty() == false) {
-      int decimal = Integer.parseInt(input);
+      int decimal = Integer.parseInt(input, conversion);
       if (decimal != 0) {
         try { //CHECK FOR ERRORS
 
@@ -106,7 +106,7 @@ public class NumberSystem {
     int convertToBase = 16;
 
     if (input.isEmpty() == false) {
-      int decimal = Integer.parseInt(input);
+      int decimal = Integer.parseInt(input, conversion);
       if (decimal != 0) {
         try { //CHECK FOR ERRORS
 
@@ -191,13 +191,13 @@ public class NumberSystem {
    *
    * @param CTWB the conversion type (binary, octal, decimal, hexadecimal)
    */
-//  public void setConvert(int CTWB) {
-//    this.conversion = CTWB;
-//  }
+  public void setConvert(int CTWB) {
+    this.conversion = CTWB;
+  }
   /**
    * Returns the conversion type for the number.
    *
    * @return the conversion type
    */
-//  public int getConvert() {return this.conversion;}
+  public int getConvert() {return this.conversion;}
 }

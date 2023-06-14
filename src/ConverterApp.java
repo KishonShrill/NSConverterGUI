@@ -1,10 +1,15 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 public class ConverterApp implements ActionListener {
 
@@ -27,7 +32,7 @@ public class ConverterApp implements ActionListener {
     JLabel showBin, showBinAns, showOct, showOctAns , showDec, showDecAns, showHex, showHexAns;
     String[] numberSystem = {"BIN","OCT","DEC","HEX"};
     JComboBox nsComboBox;
-    JTextArea TBConverted;
+    JTextArea TBConverted, dialogue_box;
 
     GridBagConstraints converter_bar = new GridBagConstraints();
 //    GridBagConstraints title_bar = new GridBagConstraints();
@@ -41,17 +46,22 @@ public class ConverterApp implements ActionListener {
     ConverterApp(){
         Setup();
         firstDesign();
-        secondDesign();
         ConverterHeader();
         ConverterContent();
+
+        secondDesign();
         jFrame.setVisible(true);
     }
 
     private void Setup() {
+        ImageIcon icon = createImageIcon("/images/middle.gif");
+        Image logo = Toolkit.getDefaultToolkit().getImage("src/images/images.png");
+
         //SETUP (just like Processing)
         jFrame.setSize(420, 630);
         jFrame.setResizable(false);
         jFrame.setTitle("Number System - Converter");
+        jFrame.setIconImage(logo);
         jFrame.setLocationRelativeTo(null); // this method will display the JFrame to center position of a screen
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -61,8 +71,8 @@ public class ConverterApp implements ActionListener {
 
         //        firstTab.setSize(420, 630);
 
-        tabbedMenu.add("Converter",firstTab);
-        tabbedMenu.add("Thread", secondTab);
+        tabbedMenu.addTab("Converter", icon, firstTab);
+        tabbedMenu.addTab("Thread", icon, secondTab);
         jFrame.add(tabbedMenu);
 
     }
@@ -140,7 +150,8 @@ public class ConverterApp implements ActionListener {
             converter_bar.gridy = 0;
             converter_bar.weightx = 70;
             converter_bar.anchor = GridBagConstraints.EAST;
-            TBConverted = new JTextArea("0");
+        TBConverted = new NoSpaceTextArea();
+        TBConverted = new JTextArea("0");
             TBConverted.setFont(new Font("Arial", Font.BOLD, 25));
         header_content.add(TBConverted, converter_bar);
     }
@@ -201,6 +212,37 @@ public class ConverterApp implements ActionListener {
             play.addActionListener(this);
         buttonBox.add(play);
         center_content.add(buttonBox);
+        /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
+
+        JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, cd_center;
+        center_dialogue = new JPanel();
+            center_dialogue.setPreferredSize(new Dimension(0,140));
+            center_dialogue.setLayout(new BorderLayout());
+        firstCenter.add(center_dialogue);
+
+        cd_marginNorth = new JPanel();
+        cd_marginNorth.setPreferredSize(new Dimension(0,20));
+        center_dialogue.add(cd_marginNorth, BorderLayout.NORTH);
+
+        cd_marginSouth = new JPanel();
+        cd_marginSouth.setPreferredSize(new Dimension(0,20));
+        center_dialogue.add(cd_marginSouth, BorderLayout.SOUTH);
+
+        cd_marginEast = new JPanel();
+        cd_marginEast.setPreferredSize(new Dimension(20,0));
+        center_dialogue.add(cd_marginEast, BorderLayout.EAST);
+
+        cd_marginWest = new JPanel();
+        cd_marginWest.setPreferredSize(new Dimension(20,0));
+        center_dialogue.add(cd_marginWest, BorderLayout.WEST);
+
+        cd_center = new JPanel();
+        cd_center.setLayout(new FlowLayout());
+        cd_center.setBackground(Color.blue); //DELETE LATER!!!
+        dialogue_box = new JTextArea("I wonder what is next...");
+        cd_center.add(dialogue_box);
+        center_dialogue.add(cd_center, BorderLayout.CENTER);
+
     }
     
     private int nsPickerChanger(int numbersystemPicker) throws IllegalStateException {
@@ -213,13 +255,12 @@ public class ConverterApp implements ActionListener {
         };
     }
 
-    //SETTER & GETTER
+    //SETTER, GETTER, & MISC
     private int getNumbersystemPicker() {return this.numbersystemPicker;}
 //    public void setBin(String bin) {this.binOutput = bin;}
 //    public void setOct(String oct) {this.octOutput = oct;}
 //    public void setDec(String dec) {this.decOutput = dec;}
 //    public void setHex(String hex) {this.hexOutput = hex;}
-
     public static boolean isBinary(String data) {
         Pattern pattern = Pattern.compile("[01]+");
         Matcher matcher = pattern.matcher(data);
@@ -241,12 +282,24 @@ public class ConverterApp implements ActionListener {
         return matcher.matches();
     }
 
+    /** Returns an ImageIcon, or null if the path was invalid. */
+    protected static ImageIcon createImageIcon(String path) {
+        java.net.URL imgURL = ConverterApp.class.getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == nsComboBox) {numbersystemPicker = nsComboBox.getSelectedIndex();}
 
         if (e.getSource() == play) {
             CHANGEME.setUserInput(TBConverted.getText(), nsPickerChanger(getNumbersystemPicker()));
+            CHANGEME.setConvert(nsPickerChanger(getNumbersystemPicker()));
 
             binOutput = CHANGEME.convertToBIN(TBConverted.getText());
             showBinAns.setText(binOutput);
