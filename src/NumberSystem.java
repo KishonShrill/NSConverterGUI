@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class NumberSystem {
   private String userInput = "";
   private int base = 0;
-  public int conversion;
+  public int conversion, giveBase;
   public String bin = "", oct = "", dec = "", hex = "";
   private static final int DECIMAL_NUM = 10;
 
@@ -57,7 +57,6 @@ public class NumberSystem {
 
     return bin;
   }
-
   public String convertToOCT(String input) {
     int convertToBase = 8;
 

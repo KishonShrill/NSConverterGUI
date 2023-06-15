@@ -214,7 +214,7 @@ public class ConverterApp implements ActionListener {
         center_content.add(buttonBox);
         /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
 
-        JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, cd_center;
+        JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, tab_bin, tab_oct, tab_dec, tab_hex;
         center_dialogue = new JPanel();
             center_dialogue.setPreferredSize(new Dimension(0,140));
             center_dialogue.setLayout(new BorderLayout());
@@ -236,12 +236,23 @@ public class ConverterApp implements ActionListener {
         cd_marginWest.setPreferredSize(new Dimension(20,0));
         center_dialogue.add(cd_marginWest, BorderLayout.WEST);
 
-        cd_center = new JPanel();
-        cd_center.setLayout(new FlowLayout());
-        cd_center.setBackground(Color.blue); //DELETE LATER!!!
-        dialogue_box = new JTextArea("I wonder what is next...");
-        cd_center.add(dialogue_box);
-        center_dialogue.add(cd_center, BorderLayout.CENTER);
+        JTabbedPane results = new JTabbedPane();
+        tab_bin = new JPanel();
+        tab_oct = new JPanel();
+        tab_dec = new JPanel();
+        tab_hex = new JPanel();
+//        cd_center.setLayout(new FlowLayout());
+//        cd_center.setBackground(Color.blue); //DELETE LATER!!!
+
+
+        //NumberSystem give object data
+
+
+            results.addTab("BIN", tab_bin);
+            results.addTab("OCT", tab_oct);
+            results.addTab("DEC", tab_dec);
+            results.addTab("HEX", tab_hex);
+        center_dialogue.add(results, BorderLayout.CENTER);
 
     }
     
