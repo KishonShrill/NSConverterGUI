@@ -1,8 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class MainMenu implements ActionListener {
 
@@ -31,14 +34,21 @@ public class MainMenu implements ActionListener {
         MainMenuButtons();
         jFrame.setVisible(true);
     }
-
+    BufferedImage image;
     private void Setup() {
+        try {
+            image = ImageIO.read(getClass().getResource("/res/calculator.gif"));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //SETUP (just like Processing)
         jFrame.setLayout(new BorderLayout(10,0));
         jFrame.setSize(420, 630);
         jFrame.setResizable(false);
         jFrame.setTitle("Number System - Main Menu");
-//      jFrame.pack();                      [somehow it minimizes the window]
+        jFrame.setIconImage(image);
         jFrame.setLocationRelativeTo(null); // this method will display the JFrame to center position of a screen
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -262,5 +272,15 @@ public class MainMenu implements ActionListener {
 
         instructionsDialog.add(instructionsPanel);
         instructionsDialog.setVisible(true);
+    }
+
+    protected static ImageIcon createImageIcon(String path) {
+        java.net.URL imgURL = MainMenu.class.getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
     }
 }

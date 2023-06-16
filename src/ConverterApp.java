@@ -1,10 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class ConverterApp implements ActionListener {
 
@@ -44,14 +45,20 @@ public class ConverterApp implements ActionListener {
     }
 
     private void Setup() {
-        ImageIcon icon = createImageIcon("/images/middle.gif");
-        Image logo = Toolkit.getDefaultToolkit().getImage("src/images/images.png");
+        ImageIcon icon = createImageIcon("/res/middle.gif");
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResource("/res/calculator.gif"));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //SETUP (just like Processing)
         jFrame.setSize(420, 630);
         jFrame.setResizable(false);
         jFrame.setTitle("Number System - Converter");
-        jFrame.setIconImage(logo);
+        jFrame.setIconImage(image);
         jFrame.setLocationRelativeTo(null); // this method will display the JFrame to center position of a screen
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
