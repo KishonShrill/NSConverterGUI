@@ -34,82 +34,63 @@
  * SimpleTableDemo.java requires no other files.
  */
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-class SimpleTableDemo extends JPanel {
-    private boolean DEBUG = false;
-    public static ArrayList<String> dataTransfer = new ArrayList<String>();
+class DataArranger extends JPanel {
+    public static ArrayList<String> dataTransfer = new ArrayList<>();
     public static Object[][] data;
 
-    public SimpleTableDemo(int toConvert, int givenBase) {
-        super(new GridLayout(1,0));
-
-        String[] columnNames = {"Division", "Quotient", "Remainder", "Digit #"};
+    public DataArranger(int toConvert, int givenBase) {
         convertDecimalToOther(toConvert, givenBase);
-
-        final JTable table = new JTable(data, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        table.setFillsViewportHeight(true);
-
-        if (DEBUG) {
-            table.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    printDebugData(table);
-                }
-            });
-        }
-
-//        Create the scroll pane and add the table to it.
-        JScrollPane scrollPane = new JScrollPane(table);
-
-//        Add the scroll pane to this panel.
-        add(scrollPane);
     }
 
     private static String convertDecimalToOther(int input, int base) {
-        String remainderString = "";
+        String remainderString;
         String answer = "";
         String[] hexArray = {"A","B","C","D","E","F"};
         int result = input;
-        int remainder = 0, currentValue = 0;
+        int remainder, currentValue;
         int loopCount = 0;
+
+        while (!dataTransfer.isEmpty()) {
+            dataTransfer.remove(0);
+        }
 
         while (result > 0) {
             currentValue = result;
             remainder = result % base;
             result = result / base;
 
+            //Array - Adding values to dataTransfer array
             dataTransfer.add(String.valueOf(currentValue));
             dataTransfer.add(String.valueOf(result));
             dataTransfer.add(String.valueOf(remainder));
             dataTransfer.add(String.valueOf(loopCount));
             loopCount = loopCount + 1;
+            //Array - Adding values to dataTransfer array
 
-            if (remainder > 10){remainderString = hexArray[remainder - 10];}
-            else {remainderString = Integer.toString(remainder);}
+            if (remainder >=     10){
+                remainderString = hexArray[remainder - 10];
+            } else {
+                remainderString = Integer.toString(remainder);
+            }
+
 
             answer = remainderString.concat(answer);
         }
 
+        //Initialize Object data array
         data = new Object[(dataTransfer.toArray().length/4)][4];
 
+        //
         int repeat = 0;
         for (int i = 0; i < (dataTransfer.toArray().length/4); i++) {
             for (int j = 0; j < 4; j++) {
-                //
                 data[i][j] = dataTransfer.get(repeat);
-                //
                 repeat = repeat + 1;
             }
-            System.out.print("\n");
         }
 
         return answer;
@@ -130,35 +111,7 @@ class SimpleTableDemo extends JPanel {
         }
         System.out.println("--------------------------");
     }
-
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("SimpleTableDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        SimpleTableDemo newContentPane = new SimpleTableDemo(10101, 8);
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-
+    public Object[][] getDataArray() {
+        return data.clone();
     }
 }

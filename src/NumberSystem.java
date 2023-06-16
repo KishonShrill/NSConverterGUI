@@ -1,6 +1,6 @@
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  * The NumberSystem class provides methods for converting numbers between
@@ -10,9 +10,8 @@ import java.util.regex.Pattern;
 public class NumberSystem {
   private String userInput = "";
   private int base = 0;
-  public int conversion, giveBase;
+  public int conversion;
   public String bin = "", oct = "", dec = "", hex = "";
-  private static final int DECIMAL_NUM = 10;
 
   /**
    * Sets the user input and the base system for the number.
@@ -25,34 +24,24 @@ public class NumberSystem {
     this.base = givenBase;
   }
 
-  /**
-   * Converts the user input to the specified base system.
-   *
-   * @param input the input to be converted
-   * @return the converted number in the specified base system
-   */
+  int decimal;
   public String convertToBIN(String input) {
     int convertToBase = 2;
 
-    if (input.isEmpty() == false) {
-      int decimal = Integer.parseInt(input, conversion);
-      if (decimal != 0) {
-        try { //CHECK FOR ERRORS
+    if (!input.isEmpty()) {
+      try { //CHECK FOR ERRORS
+        decimal = Integer.parseInt(input, conversion);
+        if (decimal != 0) {
 
-          if (isHexadecimalSTRICT(userInput) || base == 16)
-          {
+          if (isHexadecimalSTRICT(userInput) || base == 16) {
             decimal = Integer.parseInt(input, 16);
-          }
-          else
-          {
+          } else {
             decimal = Integer.parseInt(input, base);
           }
 
-        }
-        catch (NumberFormatException e) {System.out.println("Entered input is TOO HIGH of a number.");} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
-
-        bin = convertDecimalToOther(decimal, convertToBase);
-      } else {bin = "0";}
+        } else {bin = "0";}
+      } catch (NumberFormatException e) {showErrorPopup("An error occurred in BIN: " + e.getMessage());}
+      bin = convertDecimalToOther(decimal, convertToBase);
     } else {bin = "0";}
 
     return bin;
@@ -60,10 +49,10 @@ public class NumberSystem {
   public String convertToOCT(String input) {
     int convertToBase = 8;
 
-    if (input.isEmpty() == false) {
-      int decimal = Integer.parseInt(input, conversion);
+    if (!input.isEmpty()) {
+      try { //CHECK FOR ERRORS
+      decimal = Integer.parseInt(input, conversion);
       if (decimal != 0) {
-        try { //CHECK FOR ERRORS
 
           if (isHexadecimalSTRICT(userInput) || base == 16)
           {
@@ -74,11 +63,9 @@ public class NumberSystem {
             decimal = Integer.parseInt(input, base);
           }
 
-        }
-        catch (NumberFormatException e) {System.out.println("Entered input is TOO HIGH of a number.");} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
-
         oct = convertDecimalToOther(decimal, convertToBase);
-      } else {oct = "0";}
+        } else {oct = "0";}
+      } catch (NumberFormatException e) {showErrorPopup("An error occurred in OCT: " + e.getMessage());} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
     } else {oct = "0";}
 
     return oct;
@@ -92,9 +79,7 @@ public class NumberSystem {
       } else {
         decimal = Integer.parseInt(input, base);
       }
-    } catch (NumberFormatException e) {
-      System.out.println("Entered input is TOO HIGH of a number.");
-    }
+    } catch (NumberFormatException e) {showErrorPopup("An error occurred in DEC: " + e.getMessage());}
 
     /* CONVERTING AREA */
     dec = String.valueOf(decimal);
@@ -104,7 +89,7 @@ public class NumberSystem {
   public String convertToHEX(String input) {
     int convertToBase = 16;
 
-    if (input.isEmpty() == false) {
+    if (!input.isEmpty()) {
       int decimal = Integer.parseInt(input, conversion);
       if (decimal != 0) {
         try { //CHECK FOR ERRORS
@@ -119,7 +104,7 @@ public class NumberSystem {
           }
 
         }
-        catch (NumberFormatException e) {System.out.println("Entered input is TOO HIGH of a number.");} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
+        catch (NumberFormatException e) {showErrorPopup("An error occurred in HEX: " + e.getMessage());} //TRY TO PUT THIS MESSAGE IN THE CONVERTER APP
 
         hex = convertDecimalToOther(decimal, convertToBase);
       } else {hex = "0";}
@@ -136,11 +121,11 @@ public class NumberSystem {
    * @return the decimal representation of the number
    */
   private static String convertDecimalToOther(int input, int base) {
-    String remainderString = "";
+    String remainderString;
     String answer = "";
     String[] hexArray = {"A","B","C","D","E","F"};
     int result = input;
-    int remainder = 0;
+    int remainder;
 
     while (result > 0) {
       remainder = result % base;
@@ -153,15 +138,6 @@ public class NumberSystem {
     }
 
     return answer;
-  }
-
-  private static int[] convertToArray(int decimal) {
-    String decimalString = String.valueOf(decimal);
-    int[] binaryArray = new int[decimalString.length()];
-    for (int i = 0; i < decimalString.length(); i++) {
-      binaryArray[i] = decimalString.charAt(i) - '0';
-    }
-    return binaryArray;
   }
 
   /**
@@ -178,14 +154,6 @@ public class NumberSystem {
 
   // GETTER & SETTER
   /**
-   * Returns the user input.
-   *
-   * @return the user input
-   */
-//  public String getUserInput() {
-//    return this.userInput;
-//  }
-  /**
    * Sets the conversion type for the number.
    *
    * @param CTWB the conversion type (binary, octal, decimal, hexadecimal)
@@ -198,5 +166,7 @@ public class NumberSystem {
    *
    * @return the conversion type
    */
-  public int getConvert() {return this.conversion;}
+  private static void showErrorPopup(String message) {
+    JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+  }
 }

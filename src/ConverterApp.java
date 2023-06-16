@@ -1,15 +1,10 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Objects;
+import java.awt.event.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 
 public class ConverterApp implements ActionListener {
 
@@ -17,28 +12,23 @@ public class ConverterApp implements ActionListener {
     //Frame and Panels
     JFrame jFrame = new JFrame("Main menu for the Number System Converter");
     JTabbedPane tabbedMenu = new JTabbedPane();
+    JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, tab_bin, tab_oct, tab_dec, tab_hex;
     JPanel firstTab = new JPanel();
     JPanel secondTab = new JPanel();
     JPanel firstHeader, firstFooter, firstCenter;
     JPanel secondHeader, secondFooter, secondCenter;
-
-    //Buttons - For the Main Menu
     JButton play = new JButton("Convert");
-//    JButton help = new JButton("Instructions");
-//    JButton examples = new JButton("Examples");
-//    JButton credits = new JButton("Credits");
-//    JButton exit = new JButton("Exit");
-
     JLabel showBin, showBinAns, showOct, showOctAns , showDec, showDecAns, showHex, showHexAns;
     String[] numberSystem = {"BIN","OCT","DEC","HEX"};
+    String[] columnNames;
+    JTable data_sheetBIN, data_sheetOCT, data_sheetDEC, data_sheetHEX;
+    DefaultTableModel dataModelBIN, dataModelOCT, dataModelDEC, dataModelHEX;
     JComboBox nsComboBox;
-    JTextArea TBConverted, dialogue_box;
-
+    JTextArea TBConverted;
     GridBagConstraints converter_bar = new GridBagConstraints();
-//    GridBagConstraints title_bar = new GridBagConstraints();
+    NumberSystem CHANGEME = new NumberSystem();
 
     /* - - - - - Instances - - - - - */
-    NumberSystem CHANGEME = new NumberSystem();
     public static int numbersystemPicker;
     public String binOutput = "", octOutput = "", decOutput = "", hexOutput = "";
 
@@ -76,7 +66,6 @@ public class ConverterApp implements ActionListener {
         jFrame.add(tabbedMenu);
 
     }
-
     private void firstDesign() {
         //Init
         firstHeader = new JPanel();
@@ -98,35 +87,49 @@ public class ConverterApp implements ActionListener {
     }
     private void secondDesign() {
         //Init
-        secondHeader = new JPanel();
-        secondFooter = new JPanel();
+//        secondHeader = new JPanel();
+//        secondFooter = new JPanel();
         secondCenter = new JPanel();
+            secondCenter.setLayout(new BorderLayout());
+//
+//        //Background Colors - Panels
+//        secondHeader.setBackground(Color.darkGray);
+        secondCenter.setBackground(Color.lightGray);
 
-        //Background Colors - Panels
-        secondHeader.setBackground(Color.darkGray);
-        secondFooter.setBackground(Color.lightGray);
-
-        //Setting Size - Panels
-        secondHeader.setPreferredSize(new Dimension(0,120));
-        secondFooter.setPreferredSize(new Dimension(0, 25));
-
-        //Setting Positions - Panels
-        secondTab.add(secondHeader, BorderLayout.NORTH);
-        secondTab.add(secondFooter, BorderLayout.SOUTH);
-        secondTab.add(secondCenter, BorderLayout.CENTER);
+        JLabel coming_soon = new JLabel("Coming Soon...");
+            coming_soon.setFont(new Font("Arial", Font.PLAIN, 25));
+//            coming_soon.setForeground(Color.WHITE);
+            coming_soon.setHorizontalAlignment(JLabel.CENTER);
+            coming_soon.setVerticalAlignment(JLabel.CENTER);
+        secondCenter.add(coming_soon);
+//
+//        //Setting Size - Panels
+//        secondHeader.setPreferredSize(new Dimension(0,120));
+//        secondFooter.setPreferredSize(new Dimension(0, 25));
+//
+//        //Setting Positions - Panels
+//        secondTab.add(secondHeader, BorderLayout.NORTH);
+//        secondTab.add(secondFooter, BorderLayout.SOUTH);
+        secondTab.add(secondCenter);
     }
-
     private void ConverterHeader() {
         firstHeader.setLayout(new BorderLayout());
         converter_bar.insets = new Insets(0,0,0,0);
 
         JPanel header_title = new JPanel();
             header_title.setPreferredSize(new Dimension(0,60));
-            header_title.setLayout(new GridBagLayout());
+            header_title.setLayout(null);
             header_title.setBackground(Color.darkGray);
         firstHeader.add(header_title, BorderLayout.NORTH);
-                //TODO: Put some title wordings here
 
+        JLabel title = new JLabel("Number System");
+
+            int frameWidth = jFrame.getPreferredSize().width;
+
+            title.setBounds((frameWidth/2)+10, 17, 420, 38);
+            title.setFont(new Font("Arial", Font.PLAIN, 38));
+            title.setForeground(Color.WHITE);
+        header_title.add(title);
 
 
         JPanel header_content = new JPanel();
@@ -152,6 +155,7 @@ public class ConverterApp implements ActionListener {
             converter_bar.anchor = GridBagConstraints.EAST;
         TBConverted = new NoSpaceTextArea();
         TBConverted = new JTextArea("0");
+        TBConvertedSpecialFeature();
             TBConverted.setFont(new Font("Arial", Font.BOLD, 25));
         header_content.add(TBConverted, converter_bar);
     }
@@ -214,7 +218,6 @@ public class ConverterApp implements ActionListener {
         center_content.add(buttonBox);
         /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
 
-        JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, tab_bin, tab_oct, tab_dec, tab_hex;
         center_dialogue = new JPanel();
             center_dialogue.setPreferredSize(new Dimension(0,140));
             center_dialogue.setLayout(new BorderLayout());
@@ -237,16 +240,45 @@ public class ConverterApp implements ActionListener {
         center_dialogue.add(cd_marginWest, BorderLayout.WEST);
 
         JTabbedPane results = new JTabbedPane();
+//
         tab_bin = new JPanel();
         tab_oct = new JPanel();
         tab_dec = new JPanel();
         tab_hex = new JPanel();
-//        cd_center.setLayout(new FlowLayout());
-//        cd_center.setBackground(Color.blue); //DELETE LATER!!!
+        tab_bin.setLayout(new BorderLayout());
+        tab_oct.setLayout(new BorderLayout());
+        tab_dec.setLayout(new BorderLayout());
+        tab_hex.setLayout(new BorderLayout());
 
+        //UNDER CONSTRUCTION
+        columnNames = new String[]{"Division", "Quotient", "Remainder", "Digit #"};
+        dataModelBIN = new DefaultTableModel(new Object[][]{}, columnNames);
+        data_sheetBIN = new JTable(dataModelBIN);
+        data_sheetBIN.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        data_sheetBIN.setFillsViewportHeight(true);
+        JScrollPane scrollPaneBIN = new JScrollPane(data_sheetBIN);
+        tab_bin.add(scrollPaneBIN, BorderLayout.CENTER);
 
-        //NumberSystem give object data
+        dataModelOCT = new DefaultTableModel(new Object[][]{}, columnNames);
+        data_sheetOCT = new JTable(dataModelOCT);
+        data_sheetOCT.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        data_sheetOCT.setFillsViewportHeight(true);
+        JScrollPane scrollPaneOCT = new JScrollPane(data_sheetOCT);
+        tab_oct.add(scrollPaneOCT, BorderLayout.CENTER);
 
+        dataModelDEC = new DefaultTableModel(new Object[][]{}, columnNames);
+        data_sheetDEC = new JTable(dataModelDEC);
+        data_sheetDEC.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        data_sheetDEC.setFillsViewportHeight(true);
+        JScrollPane scrollPaneDEC = new JScrollPane(data_sheetDEC);
+        tab_dec.add(scrollPaneDEC, BorderLayout.CENTER);
+
+        dataModelHEX = new DefaultTableModel(new Object[][]{}, columnNames);
+        data_sheetHEX = new JTable(dataModelHEX);
+        data_sheetHEX.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        data_sheetHEX.setFillsViewportHeight(true);
+        JScrollPane scrollPaneHEX = new JScrollPane(data_sheetHEX);
+        tab_hex.add(scrollPaneHEX, BorderLayout.CENTER);
 
             results.addTab("BIN", tab_bin);
             results.addTab("OCT", tab_oct);
@@ -255,7 +287,7 @@ public class ConverterApp implements ActionListener {
         center_dialogue.add(results, BorderLayout.CENTER);
 
     }
-    
+
     private int nsPickerChanger(int numbersystemPicker) throws IllegalStateException {
         return switch (numbersystemPicker) {
             case 0 -> 2;
@@ -266,33 +298,111 @@ public class ConverterApp implements ActionListener {
         };
     }
 
-    //SETTER, GETTER, & MISC
-    private int getNumbersystemPicker() {return this.numbersystemPicker;}
-//    public void setBin(String bin) {this.binOutput = bin;}
-//    public void setOct(String oct) {this.octOutput = oct;}
-//    public void setDec(String dec) {this.decOutput = dec;}
-//    public void setHex(String hex) {this.hexOutput = hex;}
-    public static boolean isBinary(String data) {
-        Pattern pattern = Pattern.compile("[01]+");
-        Matcher matcher = pattern.matcher(data);
-        return matcher.matches();
+    //
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == nsComboBox) {numbersystemPicker = nsComboBox.getSelectedIndex();}
+
+        if (e.getSource() == play || e.getSource() == TBConverted) {
+            CHANGEME.setUserInput(TBConverted.getText(), nsPickerChanger(getNumbersystemPicker()));
+            CHANGEME.setConvert(nsPickerChanger(getNumbersystemPicker()));
+            binOutput = CHANGEME.convertToBIN(TBConverted.getText());
+            octOutput = CHANGEME.convertToOCT(TBConverted.getText());
+            decOutput = CHANGEME.convertToDEC(TBConverted.getText());
+            hexOutput = CHANGEME.convertToHEX(TBConverted.getText());
+            showBinAns.setText(binOutput);
+            showOctAns.setText(octOutput);
+            showDecAns.setText(decOutput);
+            showHexAns.setText(hexOutput);
+
+            //Setting JTextArea to '0' to ensure you can still click on the text area
+            String input = TBConverted.getText();  // Get the text from the JTextArea
+            if (input.isEmpty()) {
+                input = "0";  // Set the input to "0" if it is empty
+                TBConverted.setText(input);
+            }
+
+            //Storing data in table and updating table content after every button click
+            DataArranger dataArrangerBIN = new DataArranger(Integer.parseInt(decOutput),2);
+            Object[][] dataArrayBIN = dataArrangerBIN.getDataArray();
+            dataModelBIN.setDataVector(dataArrayBIN, columnNames);
+            tab_bin.revalidate();
+            tab_bin.repaint();
+
+            DataArranger dataArrangerOCT = new DataArranger(Integer.parseInt(decOutput),8);
+            Object[][] dataArrayOCT = dataArrangerOCT.getDataArray();
+            dataModelOCT.setDataVector(dataArrayOCT, columnNames);
+            tab_oct.revalidate();
+            tab_oct.repaint();
+
+            DataArranger dataArrangerDEC = new DataArranger(Integer.parseInt(decOutput),10);
+            Object[][] dataArrayDEC = dataArrangerDEC.getDataArray();
+            dataModelDEC.setDataVector(dataArrayDEC, columnNames);
+            tab_dec.revalidate();
+            tab_dec.repaint();
+
+            DataArranger dataArrangerHEX = new DataArranger(Integer.parseInt(decOutput),16);
+            Object[][] dataArrayHEX = dataArrangerHEX.getDataArray();
+            dataModelHEX.setDataVector(dataArrayHEX, columnNames);
+            tab_hex.revalidate();
+            tab_hex.repaint();
+        }
     }
-    public static boolean isOctal(String data) {
-        Pattern pattern = Pattern.compile("[0-7]+");
-        Matcher matcher = pattern.matcher(data);
-        return matcher.matches();
-    }
-    public static boolean isDecimal(String data) {
-        Pattern pattern = Pattern.compile("[0-9]+");
-        Matcher matcher = pattern.matcher(data);
-        return matcher.matches();
-    }
-    public static boolean isHexadecimal(String data) {
-        Pattern pattern = Pattern.compile("[0-9A-Fa-f]+");
-        Matcher matcher = pattern.matcher(data);
-        return matcher.matches();
+    public void TBConvertedSpecialFeature() {
+        TBConverted.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    play.doClick(); // Simulate a click on the "Play" button
+                    e.consume(); // Consume the event to prevent adding a new line
+                }
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    nsComboBox.showPopup(); // Open the JComboBox popup
+                }
+            }
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!((c >= 'a' && c <= 'f') && !(c >= 'A' && c <= 'F') || (Character.isDigit(c)))) {
+                    e.consume(); // Consume the event to prevent entering the character
+                }
+            }
+        });
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (e.getSource() == TBConverted) {
+                        e.consume(); // Consume the "Tab" key event
+                    }
+                }
+                return false;
+            }
+        });
     }
 
+    //SETTER, GETTER, & MISC
+    private int getNumbersystemPicker() {return this.numbersystemPicker;}
+//    public static boolean isBinary(String data) {
+//        Pattern pattern = Pattern.compile("[01]+");
+//        Matcher matcher = pattern.matcher(data);
+//        return matcher.matches();
+//    }
+//    public static boolean isOctal(String data) {
+//        Pattern pattern = Pattern.compile("[0-7]+");
+//        Matcher matcher = pattern.matcher(data);
+//        return matcher.matches();
+//    }
+//
+//    public static boolean isDecimal(String data) {
+//        Pattern pattern = Pattern.compile("[0-9]+");
+//        Matcher matcher = pattern.matcher(data);
+//        return matcher.matches();
+//    }
+//    public static boolean isHexadecimal(String data) {
+//        Pattern pattern = Pattern.compile("[0-9A-Fa-f]+");
+//        Matcher matcher = pattern.matcher(data);
+//        return matcher.matches();
+//    }
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = ConverterApp.class.getResource(path);
@@ -303,35 +413,20 @@ public class ConverterApp implements ActionListener {
             return null;
         }
     }
+    private void printDebugData(JTable table) {
+        int numRows = table.getRowCount();
+        int numCols = table.getColumnCount();
+        javax.swing.table.TableModel model = table.getModel();
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == nsComboBox) {numbersystemPicker = nsComboBox.getSelectedIndex();}
-
-        if (e.getSource() == play) {
-            CHANGEME.setUserInput(TBConverted.getText(), nsPickerChanger(getNumbersystemPicker()));
-            CHANGEME.setConvert(nsPickerChanger(getNumbersystemPicker()));
-
-            binOutput = CHANGEME.convertToBIN(TBConverted.getText());
-            showBinAns.setText(binOutput);
-
-            octOutput = CHANGEME.convertToOCT(TBConverted.getText());
-            showOctAns.setText(octOutput);
-
-            decOutput = CHANGEME.convertToDEC(TBConverted.getText());
-            showDecAns.setText(decOutput);
-//
-            hexOutput = CHANGEME.convertToHEX(TBConverted.getText());
-            showHexAns.setText(hexOutput);
-
-            //Setting JTextArea to '0' to ensure you can still click on the text area
-            String input = TBConverted.getText();  // Get the text from the JTextArea
-            if (input.isEmpty()) {
-                input = "0";  // Set the input to "0" if it is empty
-                TBConverted.setText(input);
+        System.out.println("Value of data: ");
+        for (int i=0; i < numRows; i++) {
+            System.out.print("    row " + i + ":");
+            for (int j=0; j < numCols; j++) {
+                System.out.print("  " + model.getValueAt(i, j));
             }
-
+            System.out.println();
         }
+        System.out.println("--------------------------");
     }
 }
 
