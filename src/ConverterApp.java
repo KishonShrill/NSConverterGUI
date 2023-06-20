@@ -17,7 +17,7 @@ public class ConverterApp implements ActionListener {
     JPanel firstTab = new JPanel();
     JPanel secondTab = new JPanel();
     JPanel firstHeader, firstFooter, firstCenter;
-    JPanel secondHeader, secondFooter, secondCenter;
+    JPanel secondHeader, secondFooter, threaderContent, contentPane, mainThreadPanel;
     JButton play = new JButton("Convert");
     JLabel showBin, showBinAns, showOct, showOctAns , showDec, showDecAns, showHex, showHexAns;
     String[] numberSystem = {"BIN","OCT","DEC","HEX"};
@@ -27,20 +27,21 @@ public class ConverterApp implements ActionListener {
     JComboBox nsComboBox;
     JTextArea TBConverted;
     GridBagConstraints converter_bar = new GridBagConstraints();
-    NumberSystem CHANGEME = new NumberSystem();
+    GridBagConstraints constraints = new GridBagConstraints();
+    NumberSystem instanceNumberSystem = new NumberSystem();
 
     /* - - - - - Instances - - - - - */
-    public static int numsysComboBox;
+    public static int comboBoxNumberSystem;
     public String binOutput = "", octOutput = "", decOutput = "", hexOutput = "";
 
     //SETUP (just like Processing)
     ConverterApp(){
         Setup();
-        firstDesign();
+        firstTabDesign();
         ConverterHeader();
         ConverterContent();
 
-        secondDesign();
+        secondTabDesign();
         jFrame.setVisible(true);
     }
 
@@ -65,15 +66,11 @@ public class ConverterApp implements ActionListener {
         // FIRST TAB
         firstTab.setLayout(new BorderLayout(10,0));
         secondTab.setLayout(new BorderLayout(10,0));
-
-        //        firstTab.setSize(420, 630);
-
         tabbedMenu.addTab("Converter", icon, firstTab);
         tabbedMenu.addTab("Thread", icon, secondTab);
         jFrame.add(tabbedMenu);
-
     }
-    private void firstDesign() {
+    private void firstTabDesign() {
         //Init
         firstHeader = new JPanel();
         firstFooter = new JPanel();
@@ -92,32 +89,66 @@ public class ConverterApp implements ActionListener {
         firstTab.add(firstFooter, BorderLayout.SOUTH);
         firstTab.add(firstCenter, BorderLayout.CENTER);
     }
-    private void secondDesign() {
-        //Init
+    private void secondTabDesign() {
+        //setup
+        contentPane = new JPanel(new BorderLayout());
+        mainThreadPanel = new JPanel();
+        mainThreadPanel.setLayout(new GridBagLayout());
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 1.0; // Column width weight
+        constraints.weighty = 1.0; // Row height weight
+
+        //Header
         secondHeader = new JPanel();
+            secondHeader.setBackground(Color.darkGray);
+            secondHeader.setPreferredSize(new Dimension(0, 100)); // Set the height to 100 pixels
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.gridwidth = 3; // Span across all columns
+            constraints.weighty = 0.1; // Adjust the row height weight
+        mainThreadPanel.add(secondHeader, constraints);
+        
+        //Content of Thread Conversions
+        threaderContent = new JPanel();
+            threaderContent.setLayout(new GridLayout(1, 3, 10, 10)); // Set horizontal gap between columns
+            threaderContent.setBackground(Color.white);
+
+
+        // Adding margin between the columns
+        int columnMargin = 10;
+        int rowMargin = 10;
+        EmptyBorder threaderBorder = new EmptyBorder(rowMargin, columnMargin, rowMargin, columnMargin);
+        threaderContent.setBorder(threaderBorder);
+
+        // Columns for bin, oct, and hex
+        JPanel colBin = new JPanel();
+        colBin.setBackground(Color.BLUE);
+        threaderContent.add(colBin);
+
+        JPanel colOct = new JPanel();
+        colOct.setBackground(Color.YELLOW);
+        threaderContent.add(colOct);
+
+        JPanel colHex = new JPanel();
+        colHex.setBackground(Color.ORANGE);
+        threaderContent.add(colHex);
+
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            constraints.gridwidth = 3; // Span across all columns
+            constraints.weighty = 0.9; // Adjust the row height weight
+        mainThreadPanel.add(threaderContent, constraints);
+        secondTab.add(mainThreadPanel, BorderLayout.CENTER);
+
+        //Footer
         secondFooter = new JPanel();
-
-        //Background Colors - Panels
-        secondHeader.setBackground(Color.darkGray);
-
-        //Setting Size - Panels
-        secondHeader.setPreferredSize(new Dimension(0,120));
+        secondFooter.setBackground(Color.lightGray);
         secondFooter.setPreferredSize(new Dimension(0, 25));
-
-        //Setting Positions - Panels
-        secondTab.add(secondHeader, BorderLayout.NORTH);
         secondTab.add(secondFooter, BorderLayout.SOUTH);
-//        secondTab.add(secondCenter);
 
-//        secondCenter = new JPanel();
-//        secondCenter.setLayout(new BorderLayout());
-//        secondCenter.setBackground(Color.lightGray);
-//
-//        JLabel coming_soon = new JLabel("Coming Soon...");
-//        coming_soon.setFont(new Font("Arial", Font.PLAIN, 25));
-//        coming_soon.setHorizontalAlignment(JLabel.CENTER);
-//        coming_soon.setVerticalAlignment(JLabel.CENTER);
-//        secondCenter.add(coming_soon);
+
+//        secondTab.add(secondHeader, BorderLayout.NORTH);
+//        secondTab.add(threaderContent, BorderLayout.SOUTH);
     }
     private void ConverterHeader() {
         firstHeader.setLayout(new BorderLayout());
@@ -166,7 +197,6 @@ public class ConverterApp implements ActionListener {
             TBConverted.setFont(new Font("Arial", Font.BOLD, 25));
         header_content.add(TBConverted, converter_bar);
     }
-
     private void ConverterContent() {
         JPanel binBox, octBox, decBox, hexBox, emptyBox, buttonBox;
         firstCenter.setLayout(new BorderLayout());
@@ -174,7 +204,6 @@ public class ConverterApp implements ActionListener {
         JPanel center_content = new JPanel();
             center_content.setPreferredSize(new Dimension(0,140));
             center_content.setLayout(new BoxLayout(center_content, BoxLayout.PAGE_AXIS));
-//            center_content.setBackground(Color.blue); //DELETE LATER!!!
         firstCenter.add(center_content, BorderLayout.NORTH);
 
         /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
@@ -223,8 +252,8 @@ public class ConverterApp implements ActionListener {
             play.addActionListener(this);
         buttonBox.add(play);
         center_content.add(buttonBox);
+        
         /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
-
         center_dialogue = new JPanel();
             center_dialogue.setPreferredSize(new Dimension(0,140));
             center_dialogue.setLayout(new BorderLayout());
@@ -247,7 +276,7 @@ public class ConverterApp implements ActionListener {
         center_dialogue.add(cd_marginWest, BorderLayout.WEST);
 
         JTabbedPane results = new JTabbedPane();
-//
+
         tab_bin = new JPanel();
         tab_oct = new JPanel();
         tab_dec = new JPanel();
@@ -257,7 +286,7 @@ public class ConverterApp implements ActionListener {
         tab_dec.setLayout(new BorderLayout());
         tab_hex.setLayout(new BorderLayout());
 
-        //UNDER CONSTRUCTION
+        //Setting the Default Table
         columnNames = new String[]{"Division", "Quotient", "Remainder", "Digit #"};
         dataModelBIN = new DefaultTableModel(new Object[][]{}, columnNames);
         data_sheetBIN = new JTable(dataModelBIN);
@@ -308,15 +337,15 @@ public class ConverterApp implements ActionListener {
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == nsComboBox) {numsysComboBox = nsComboBox.getSelectedIndex();}
+        if (e.getSource() == nsComboBox) {comboBoxNumberSystem = nsComboBox.getSelectedIndex();}
 
         if (e.getSource() == play || e.getSource() == TBConverted) {
-            CHANGEME.setUserInput(TBConverted.getText(), nsPickerChanger(getNumberSystemPicker()));
-            CHANGEME.setConvert(nsPickerChanger(getNumberSystemPicker()));
-            binOutput = CHANGEME.convertToBIN(TBConverted.getText());
-            octOutput = CHANGEME.convertToOCT(TBConverted.getText());
-            decOutput = CHANGEME.convertToDEC(TBConverted.getText());
-            hexOutput = CHANGEME.convertToHEX(TBConverted.getText());
+            instanceNumberSystem.setUserInput(TBConverted.getText(), nsPickerChanger(getNumberSystemPicker()));
+            instanceNumberSystem.setConvert(nsPickerChanger(getNumberSystemPicker()));
+            binOutput = instanceNumberSystem.convertToBIN(TBConverted.getText());
+            octOutput = instanceNumberSystem.convertToOCT(TBConverted.getText());
+            decOutput = instanceNumberSystem.convertToDEC(TBConverted.getText());
+            hexOutput = instanceNumberSystem.convertToHEX(TBConverted.getText());
             showBinAns.setText(binOutput);
             showOctAns.setText(octOutput);
             showDecAns.setText(decOutput);
@@ -388,7 +417,7 @@ public class ConverterApp implements ActionListener {
     }
 
     //SETTER, GETTER, & MISC
-    private int getNumberSystemPicker() {return this.numsysComboBox;}
+    private int getNumberSystemPicker() {return this.comboBoxNumberSystem;}
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = ConverterApp.class.getResource(path);
