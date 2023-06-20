@@ -30,7 +30,7 @@ public class ConverterApp implements ActionListener {
     NumberSystem CHANGEME = new NumberSystem();
 
     /* - - - - - Instances - - - - - */
-    public static int numbersystemPicker;
+    public static int numsysComboBox;
     public String binOutput = "", octOutput = "", decOutput = "", hexOutput = "";
 
     //SETUP (just like Processing)
@@ -94,30 +94,30 @@ public class ConverterApp implements ActionListener {
     }
     private void secondDesign() {
         //Init
-//        secondHeader = new JPanel();
-//        secondFooter = new JPanel();
-        secondCenter = new JPanel();
-            secondCenter.setLayout(new BorderLayout());
-//
-//        //Background Colors - Panels
-//        secondHeader.setBackground(Color.darkGray);
-        secondCenter.setBackground(Color.lightGray);
+        secondHeader = new JPanel();
+        secondFooter = new JPanel();
 
-        JLabel coming_soon = new JLabel("Coming Soon...");
-            coming_soon.setFont(new Font("Arial", Font.PLAIN, 25));
-//            coming_soon.setForeground(Color.WHITE);
-            coming_soon.setHorizontalAlignment(JLabel.CENTER);
-            coming_soon.setVerticalAlignment(JLabel.CENTER);
-        secondCenter.add(coming_soon);
+        //Background Colors - Panels
+        secondHeader.setBackground(Color.darkGray);
+
+        //Setting Size - Panels
+        secondHeader.setPreferredSize(new Dimension(0,120));
+        secondFooter.setPreferredSize(new Dimension(0, 25));
+
+        //Setting Positions - Panels
+        secondTab.add(secondHeader, BorderLayout.NORTH);
+        secondTab.add(secondFooter, BorderLayout.SOUTH);
+//        secondTab.add(secondCenter);
+
+//        secondCenter = new JPanel();
+//        secondCenter.setLayout(new BorderLayout());
+//        secondCenter.setBackground(Color.lightGray);
 //
-//        //Setting Size - Panels
-//        secondHeader.setPreferredSize(new Dimension(0,120));
-//        secondFooter.setPreferredSize(new Dimension(0, 25));
-//
-//        //Setting Positions - Panels
-//        secondTab.add(secondHeader, BorderLayout.NORTH);
-//        secondTab.add(secondFooter, BorderLayout.SOUTH);
-        secondTab.add(secondCenter);
+//        JLabel coming_soon = new JLabel("Coming Soon...");
+//        coming_soon.setFont(new Font("Arial", Font.PLAIN, 25));
+//        coming_soon.setHorizontalAlignment(JLabel.CENTER);
+//        coming_soon.setVerticalAlignment(JLabel.CENTER);
+//        secondCenter.add(coming_soon);
     }
     private void ConverterHeader() {
         firstHeader.setLayout(new BorderLayout());
@@ -295,24 +295,24 @@ public class ConverterApp implements ActionListener {
 
     }
 
-    private int nsPickerChanger(int numbersystemPicker) throws IllegalStateException {
-        return switch (numbersystemPicker) {
+    private int nsPickerChanger(int value) throws IllegalStateException {
+        return switch (value) {
             case 0 -> 2;
             case 1 -> 8;
             case 2 -> 10;
             case 3 -> 16;
-            default -> throw new IllegalStateException("Unexpected value: " + numbersystemPicker);
+            default -> throw new IllegalStateException("Unexpected value: " + value);
         };
     }
 
     //
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == nsComboBox) {numbersystemPicker = nsComboBox.getSelectedIndex();}
+        if (e.getSource() == nsComboBox) {numsysComboBox = nsComboBox.getSelectedIndex();}
 
         if (e.getSource() == play || e.getSource() == TBConverted) {
-            CHANGEME.setUserInput(TBConverted.getText(), nsPickerChanger(getNumbersystemPicker()));
-            CHANGEME.setConvert(nsPickerChanger(getNumbersystemPicker()));
+            CHANGEME.setUserInput(TBConverted.getText(), nsPickerChanger(getNumberSystemPicker()));
+            CHANGEME.setConvert(nsPickerChanger(getNumberSystemPicker()));
             binOutput = CHANGEME.convertToBIN(TBConverted.getText());
             octOutput = CHANGEME.convertToOCT(TBConverted.getText());
             decOutput = CHANGEME.convertToDEC(TBConverted.getText());
@@ -388,28 +388,7 @@ public class ConverterApp implements ActionListener {
     }
 
     //SETTER, GETTER, & MISC
-    private int getNumbersystemPicker() {return this.numbersystemPicker;}
-//    public static boolean isBinary(String data) {
-//        Pattern pattern = Pattern.compile("[01]+");
-//        Matcher matcher = pattern.matcher(data);
-//        return matcher.matches();
-//    }
-//    public static boolean isOctal(String data) {
-//        Pattern pattern = Pattern.compile("[0-7]+");
-//        Matcher matcher = pattern.matcher(data);
-//        return matcher.matches();
-//    }
-//
-//    public static boolean isDecimal(String data) {
-//        Pattern pattern = Pattern.compile("[0-9]+");
-//        Matcher matcher = pattern.matcher(data);
-//        return matcher.matches();
-//    }
-//    public static boolean isHexadecimal(String data) {
-//        Pattern pattern = Pattern.compile("[0-9A-Fa-f]+");
-//        Matcher matcher = pattern.matcher(data);
-//        return matcher.matches();
-//    }
+    private int getNumberSystemPicker() {return this.numsysComboBox;}
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = ConverterApp.class.getResource(path);
