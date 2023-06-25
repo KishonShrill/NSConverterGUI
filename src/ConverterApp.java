@@ -2,6 +2,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -11,28 +15,32 @@ public class ConverterApp implements ActionListener {
 
     /* - - - - - Initiations - - - - - */
     //Frame and Panels
-    JFrame jFrame = new JFrame("Main menu for the Number System Converter");
-    JTabbedPane tabbedMenu = new JTabbedPane();
-    JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, tab_bin, tab_oct, tab_dec, tab_hex;
-    JPanel firstTab = new JPanel();
-    JPanel secondTab = new JPanel();
-    JPanel firstHeader, firstFooter, firstCenter;
-    JPanel secondHeader, secondFooter, threaderContent, contentPane, mainThreadPanel;
-    JButton play = new JButton("Convert");
-    JLabel showBin, showBinAns, showOct, showOctAns , showDec, showDecAns, showHex, showHexAns;
-    String[] numberSystem = {"BIN","OCT","DEC","HEX"};
-    String[] columnNames;
-    JTable data_sheetBIN, data_sheetOCT, data_sheetDEC, data_sheetHEX;
-    DefaultTableModel dataModelBIN, dataModelOCT, dataModelDEC, dataModelHEX;
-    JComboBox nsComboBox;
-    JTextArea TBConverted;
-    GridBagConstraints converter_bar = new GridBagConstraints();
-    GridBagConstraints constraints = new GridBagConstraints();
-    NumberSystem instanceNumberSystem = new NumberSystem();
+    private JFrame jFrame = new JFrame("Main menu for the Number System Converter");
+    private JTabbedPane tabbedMenu = new JTabbedPane();
+    private JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, tab_bin, tab_oct, tab_dec, tab_hex, colBin, colOct, colHex;
+    private JPanel firstTab = new JPanel();
+    private JPanel secondTab = new JPanel();
+    private JPanel firstHeader, firstFooter, firstCenter;
+    private JPanel secondHeader, secondFooter, threaderContent, contentPane, mainThreadPanel;
+    private JButton play = new JButton("Convert");
+    private JButton getButton;
+    private JLabel showBin, showBinAns, showOct, showOctAns , showDec, showDecAns, showHex, showHexAns;
+    private String[] numberSystem = {"BIN","OCT","DEC","HEX"};
+    private String[] columnNames;
+    private JTable data_sheetBIN, data_sheetOCT, data_sheetDEC, data_sheetHEX;
+    private DefaultTableModel dataModelBIN, dataModelOCT, dataModelDEC, dataModelHEX;
+    private DefaultTableModel threaderModelBIN, threaderModelOCT, threaderModelHEX;
+    private JComboBox nsComboBox;
+    private JTextArea TBConverted;
+    private JTextField textField1, textField2;
+    private GridBagConstraints converter_bar = new GridBagConstraints();
+    private GridBagConstraints constraints = new GridBagConstraints();
+    private NumberSystem instanceNumberSystem = new NumberSystem();
 
     /* - - - - - Instances - - - - - */
     public static int comboBoxNumberSystem;
     public String binOutput = "", octOutput = "", decOutput = "", hexOutput = "";
+    public String input1, input2;
 
     //SETUP (just like Processing)
     ConverterApp(){
@@ -42,6 +50,7 @@ public class ConverterApp implements ActionListener {
         ConverterContent();
 
         secondTabDesign();
+        ThreaderContent();
         jFrame.setVisible(true);
     }
 
@@ -60,7 +69,7 @@ public class ConverterApp implements ActionListener {
         jFrame.setResizable(false);
         jFrame.setTitle("Number System - Converter");
         jFrame.setIconImage(image);
-        jFrame.setLocationRelativeTo(null); // this method will display the JFrame to center position of a screen
+        jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // FIRST TAB
@@ -88,67 +97,6 @@ public class ConverterApp implements ActionListener {
         firstTab.add(firstHeader, BorderLayout.NORTH);
         firstTab.add(firstFooter, BorderLayout.SOUTH);
         firstTab.add(firstCenter, BorderLayout.CENTER);
-    }
-    private void secondTabDesign() {
-        //setup
-        contentPane = new JPanel(new BorderLayout());
-        mainThreadPanel = new JPanel();
-        mainThreadPanel.setLayout(new GridBagLayout());
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0; // Column width weight
-        constraints.weighty = 1.0; // Row height weight
-
-        //Header
-        secondHeader = new JPanel();
-            secondHeader.setBackground(Color.darkGray);
-            secondHeader.setPreferredSize(new Dimension(0, 100)); // Set the height to 100 pixels
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-            constraints.gridwidth = 3; // Span across all columns
-            constraints.weighty = 0.1; // Adjust the row height weight
-        mainThreadPanel.add(secondHeader, constraints);
-        
-        //Content of Thread Conversions
-        threaderContent = new JPanel();
-            threaderContent.setLayout(new GridLayout(1, 3, 10, 10)); // Set horizontal gap between columns
-            threaderContent.setBackground(Color.white);
-
-
-        // Adding margin between the columns
-        int columnMargin = 10;
-        int rowMargin = 10;
-        EmptyBorder threaderBorder = new EmptyBorder(rowMargin, columnMargin, rowMargin, columnMargin);
-        threaderContent.setBorder(threaderBorder);
-
-        // Columns for bin, oct, and hex
-        JPanel colBin = new JPanel();
-        colBin.setBackground(Color.BLUE);
-        threaderContent.add(colBin);
-
-        JPanel colOct = new JPanel();
-        colOct.setBackground(Color.YELLOW);
-        threaderContent.add(colOct);
-
-        JPanel colHex = new JPanel();
-        colHex.setBackground(Color.ORANGE);
-        threaderContent.add(colHex);
-
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 3; // Span across all columns
-            constraints.weighty = 0.9; // Adjust the row height weight
-        mainThreadPanel.add(threaderContent, constraints);
-        secondTab.add(mainThreadPanel, BorderLayout.CENTER);
-
-        //Footer
-        secondFooter = new JPanel();
-        secondFooter.setBackground(Color.lightGray);
-        secondFooter.setPreferredSize(new Dimension(0, 25));
-        secondTab.add(secondFooter, BorderLayout.SOUTH);
-
-
-//        secondTab.add(secondHeader, BorderLayout.NORTH);
-//        secondTab.add(threaderContent, BorderLayout.SOUTH);
     }
     private void ConverterHeader() {
         firstHeader.setLayout(new BorderLayout());
@@ -252,7 +200,7 @@ public class ConverterApp implements ActionListener {
             play.addActionListener(this);
         buttonBox.add(play);
         center_content.add(buttonBox);
-        
+
         /* - - - - - - - - - - - The Output Area - - - - - - - - - - - */
         center_dialogue = new JPanel();
             center_dialogue.setPreferredSize(new Dimension(0,140));
@@ -324,6 +272,133 @@ public class ConverterApp implements ActionListener {
 
     }
 
+    private void secondTabDesign() {
+        //setup
+        contentPane = new JPanel(new BorderLayout());
+        mainThreadPanel = new JPanel();
+        mainThreadPanel.setLayout(new GridBagLayout());
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 1.0; // Column width weight
+        constraints.weighty = 1.0; // Row height weight
+
+        //Header
+        secondHeader = new JPanel();
+        secondHeader.setPreferredSize(new Dimension(0, 100));
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 3; // Span across all columns
+        constraints.weighty = 0.15; // Adjust the row height weight
+        mainThreadPanel.add(secondHeader, constraints);
+
+        //Content of Thread Conversions
+        threaderContent = new JPanel();
+        threaderContent.setLayout(new GridLayout(1, 3, 10, 10));
+        threaderContent.setBackground(Color.white);
+
+
+        // Adding margin between the columns
+        int columnMargin = 10;
+        int rowMargin = 10;
+        EmptyBorder threaderBorder = new EmptyBorder(rowMargin, columnMargin, rowMargin, columnMargin);
+        threaderContent.setBorder(threaderBorder);
+
+        // Columns for bin, oct, and hex
+        colBin = new JPanel();
+        colBin.setLayout(new BorderLayout());
+        colBin.setBackground(Color.BLUE);
+        threaderContent.add(colBin);
+
+        colOct = new JPanel();
+        colOct.setLayout(new BorderLayout());
+        colOct.setBackground(Color.YELLOW);
+        threaderContent.add(colOct);
+
+        colHex = new JPanel();
+        colHex.setLayout(new BorderLayout());
+        colHex.setBackground(Color.ORANGE);
+        threaderContent.add(colHex);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 3;
+        constraints.weighty = 0.85;
+        mainThreadPanel.add(threaderContent, constraints);
+        secondTab.add(mainThreadPanel, BorderLayout.CENTER);
+
+        //Footer
+        secondFooter = new JPanel();
+        secondFooter.setBackground(Color.lightGray);
+        secondFooter.setPreferredSize(new Dimension(0, 25));
+        secondTab.add(secondFooter, BorderLayout.SOUTH);
+    }
+    private void ThreaderContent() {
+        /* Header Panel */
+        JPanel minPanel = createPanel("Min:", "0");
+        JPanel maxPanel = createPanel("Max:", "0");
+        disableLettersAndSpecialCharacters(textField1);
+        disableLettersAndSpecialCharacters(textField2);
+        TextFieldFeature();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        getButton = new JButton("Start");
+        getButton.addActionListener(this);
+        buttonPanel.add(getButton);
+
+        secondHeader.setLayout(new BoxLayout(secondHeader, BoxLayout.Y_AXIS));
+        secondHeader.add(minPanel);
+        secondHeader.add(maxPanel);
+        secondHeader.add(buttonPanel);
+
+        maxPanel.setBorder(new EmptyBorder(10,10,5,10));
+        minPanel.setBorder(new EmptyBorder(10,10,5,10));
+        buttonPanel.setBorder(new EmptyBorder(0,0,10,0));
+
+        /* Content Display Panel */
+        threaderModelBIN = new DefaultTableModel(new Object[][]{}, new String[]{"BIN:"});
+        JTable threader_sheetBIN = new JTable(threaderModelBIN);
+        threader_sheetBIN.setPreferredScrollableViewportSize(new Dimension(600, 500));
+        threader_sheetBIN.setFillsViewportHeight(true);
+        JScrollPane threaderPaneBIN = new JScrollPane(threader_sheetBIN);
+        colBin.add(threaderPaneBIN, BorderLayout.CENTER);
+
+        threaderModelOCT = new DefaultTableModel(new Object[][]{}, new String[]{"OCT:"});
+        JTable threader_sheetOCT = new JTable(threaderModelOCT);
+        threader_sheetOCT.setPreferredScrollableViewportSize(new Dimension(300, 500));
+        threader_sheetOCT.setFillsViewportHeight(true);
+        JScrollPane threaderPaneOCT = new JScrollPane(threader_sheetOCT);
+        colOct.add(threaderPaneOCT, BorderLayout.CENTER);
+
+        threaderModelHEX = new DefaultTableModel(new Object[][]{}, new String[]{"HEX:"});
+        JTable threader_sheetHEX = new JTable(threaderModelHEX);
+        threader_sheetHEX.setPreferredScrollableViewportSize(new Dimension(300, 500));
+        threader_sheetHEX.setFillsViewportHeight(true);
+        JScrollPane threaderPaneHEX = new JScrollPane(threader_sheetHEX);
+        colHex.add(threaderPaneHEX, BorderLayout.CENTER);
+    }
+    private JPanel createPanel(String labelText, String textAreaText) {
+        JPanel panel = new JPanel(new BorderLayout(10,0));
+
+        JLabel label = new JLabel(labelText);
+        label.setPreferredSize(new Dimension(30,0));
+        JTextField textArea = new JTextField(textAreaText);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 32));
+
+        JPanel innerPanel = new JPanel(new BorderLayout());
+        innerPanel.add(textArea, BorderLayout.CENTER);
+
+        panel.add(label, BorderLayout.WEST);
+        panel.add(innerPanel, BorderLayout.CENTER);
+
+        // Store the JTextField reference
+        if (textField1 == null) {
+            textField1 = textArea;
+        } else {
+            textField2 = textArea;
+        }
+
+        return panel;
+    }
+
     private int nsPickerChanger(int value) throws IllegalStateException {
         return switch (value) {
             case 0 -> 2;
@@ -334,7 +409,6 @@ public class ConverterApp implements ActionListener {
         };
     }
 
-    //
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == nsComboBox) {comboBoxNumberSystem = nsComboBox.getSelectedIndex();}
@@ -383,23 +457,117 @@ public class ConverterApp implements ActionListener {
             tab_hex.revalidate();
             tab_hex.repaint();
         }
+
+        if (e.getSource() == getButton) {
+            input1 = textField1.getText();
+            input2 = textField2.getText();
+            if ((isValidInput(input1) == false) || (isValidInput(input2) == false)) {JOptionPane.showMessageDialog(jFrame, "Invalid input. Please enter valid integer values.", "Invalid Input", JOptionPane.ERROR_MESSAGE);}
+            int min = Integer.parseInt(input1);
+            int max = Integer.parseInt(input2);
+            if (min > max) {JOptionPane.showMessageDialog(jFrame, "Invalid input. Min value cannot be bigger than max.", "Invalid Input", JOptionPane.ERROR_MESSAGE);}
+
+            TabulateData binary_data = new TabulateData(2, min, max);
+            TabulateData octal_data = new TabulateData(8, min, max);
+            TabulateData hexadecimal_data = new TabulateData(16, min, max);
+
+            binary_data.setName("Binary Thread");
+            octal_data.setName("Octal Thread");
+            hexadecimal_data.setName("Hexadecimal Thread");
+
+            if ((binary_data.isAlive()) || (octal_data.isAlive()) || (hexadecimal_data.isAlive())) {
+                binary_data.stop(); octal_data.stop(); hexadecimal_data.stop();
+                binary_data.start(); octal_data.start(); hexadecimal_data.start();
+            } else {binary_data.start(); octal_data.start(); hexadecimal_data.start();}
+
+            try {
+                binary_data.join();
+                octal_data.join();
+                hexadecimal_data.join();
+            } catch (InterruptedException n) {
+                n.printStackTrace();
+            }
+
+            Object[][] threaderArrayBIN = binary_data.getDataArray();
+            Object[][] threaderArrayOCT = octal_data.getDataArray();
+            Object[][] threaderArrayHEX = hexadecimal_data.getDataArray();
+
+            threaderModelBIN.setDataVector(threaderArrayBIN, new String[]{"BIN:"});
+            threaderModelOCT.setDataVector(threaderArrayOCT, new String[]{"OCT:"});
+            threaderModelHEX.setDataVector(threaderArrayHEX, new String[]{"HEX:"});
+
+            colBin.revalidate();
+            colOct.revalidate();
+            colHex.revalidate();
+            colBin.repaint();
+            colOct.repaint();
+            colHex.repaint();
+        }
+    }
+    private void disableLettersAndSpecialCharacters(JTextField textField) {
+        AbstractDocument document = (AbstractDocument) textField.getDocument();
+        document.setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
+                if (containsLetterOrSpecialCharacter(text)) {
+                    return; // Reject the insertion of letters and special characters
+                }
+                super.insertString(fb, offset, text, attr);
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (containsLetterOrSpecialCharacter(text)) {
+                    return; // Reject the replacement of letters and special characters
+                }
+                super.replace(fb, offset, length, text, attrs);
+            }
+
+            private boolean containsLetterOrSpecialCharacter(String text) {
+                for (char c : text.toCharArray()) {
+                    if (Character.isLetter(c) || !Character.isLetterOrDigit(c)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+    public void TextFieldFeature() {
+        textField1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    getButton.doClick();
+                    e.consume();
+                }
+            }
+        });
+        textField2.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    getButton.doClick();
+                    e.consume();
+                }
+            }
+        });
     }
     public void TBConvertedSpecialFeature() {
         TBConverted.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    play.doClick(); // Simulate a click on the "Play" button
-                    e.consume(); // Consume the event to prevent adding a new line
+                    play.doClick();
+                    e.consume();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_TAB) {
-                    nsComboBox.showPopup(); // Open the JComboBox popup
+                    nsComboBox.showPopup();
                 }
             }
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
                 if (!((c >= 'a' && c <= 'f') && !(c >= 'A' && c <= 'F') || (Character.isDigit(c)))) {
-                    e.consume(); // Consume the event to prevent entering the character
+                    e.consume();
                 }
             }
         });
@@ -408,15 +576,25 @@ public class ConverterApp implements ActionListener {
             public boolean dispatchKeyEvent(KeyEvent e) {
                 if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_TAB) {
                     if (e.getSource() == TBConverted) {
-                        e.consume(); // Consume the "Tab" key event
+                        e.consume();
                     }
                 }
                 return false;
             }
         });
     }
+    private boolean isValidInput(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
     //SETTER, GETTER, & MISC
+    public String getInput1() {return this.input1;}
+    public String getInput2() {return this.input2;}
     private int getNumberSystemPicker() {return this.comboBoxNumberSystem;}
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
@@ -428,20 +606,18 @@ public class ConverterApp implements ActionListener {
             return null;
         }
     }
-    private void printDebugData(JTable table) {
-        int numRows = table.getRowCount();
-        int numCols = table.getColumnCount();
-        javax.swing.table.TableModel model = table.getModel();
-
-        System.out.println("Value of data: ");
-        for (int i=0; i < numRows; i++) {
-            System.out.print("    row " + i + ":");
-            for (int j=0; j < numCols; j++) {
-                System.out.print("  " + model.getValueAt(i, j));
-            }
-            System.out.println();
+    public void printDataArray(Object[][] data) {
+        if (data == null) {
+            System.out.println("Data array is empty.");
+            return;
         }
-        System.out.println("--------------------------");
+
+        System.out.println("Data array contents:");
+        for (Object[] row : data) {
+            for (Object element : row) {
+                System.out.println(element);
+            }
+        }
     }
 }
 

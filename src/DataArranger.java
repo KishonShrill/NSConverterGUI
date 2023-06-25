@@ -76,8 +76,6 @@ class DataArranger extends JPanel {
             } else {
                 remainderString = Integer.toString(remainder);
             }
-
-
             answer = remainderString.concat(answer);
         }
 
