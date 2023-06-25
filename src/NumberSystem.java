@@ -161,11 +161,6 @@ public class NumberSystem {
   public void setConvert(int CTWB) {
     this.conversion = CTWB;
   }
-  /**
-   * Returns the conversion type for the number.
-   *
-   * @return the conversion type
-   */
   private static void showErrorPopup(String message) {
     JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
   }

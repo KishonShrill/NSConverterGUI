@@ -15,17 +15,17 @@ public class ConverterApp implements ActionListener {
 
     /* - - - - - Initiations - - - - - */
     //Frame and Panels
-    private JFrame jFrame = new JFrame("Main menu for the Number System Converter");
-    private JTabbedPane tabbedMenu = new JTabbedPane();
+    private final JFrame jFrame = new JFrame("Main menu for the Number System Converter");
+    private final JTabbedPane tabbedMenu = new JTabbedPane();
     private JPanel center_dialogue, cd_marginNorth, cd_marginSouth, cd_marginEast, cd_marginWest, tab_bin, tab_oct, tab_dec, tab_hex, colBin, colOct, colHex;
-    private JPanel firstTab = new JPanel();
-    private JPanel secondTab = new JPanel();
+    private final JPanel firstTab = new JPanel();
+    private final JPanel secondTab = new JPanel();
     private JPanel firstHeader, firstFooter, firstCenter;
     private JPanel secondHeader, secondFooter, threaderContent, contentPane, mainThreadPanel;
-    private JButton play = new JButton("Convert");
+    private final JButton play = new JButton("Convert");
     private JButton getButton;
     private JLabel showBin, showBinAns, showOct, showOctAns , showDec, showDecAns, showHex, showHexAns;
-    private String[] numberSystem = {"BIN","OCT","DEC","HEX"};
+    private final String[] numberSystem = {"BIN","OCT","DEC","HEX"};
     private String[] columnNames;
     private JTable data_sheetBIN, data_sheetOCT, data_sheetDEC, data_sheetHEX;
     private DefaultTableModel dataModelBIN, dataModelOCT, dataModelDEC, dataModelHEX;
@@ -33,9 +33,9 @@ public class ConverterApp implements ActionListener {
     private JComboBox nsComboBox;
     private JTextArea TBConverted;
     private JTextField textField1, textField2;
-    private GridBagConstraints converter_bar = new GridBagConstraints();
-    private GridBagConstraints constraints = new GridBagConstraints();
-    private NumberSystem instanceNumberSystem = new NumberSystem();
+    private final GridBagConstraints converter_bar = new GridBagConstraints();
+    private final GridBagConstraints constraints = new GridBagConstraints();
+    private final NumberSystem instanceNumberSystem = new NumberSystem();
 
     /* - - - - - Instances - - - - - */
     public static int comboBoxNumberSystem;
@@ -461,7 +461,7 @@ public class ConverterApp implements ActionListener {
         if (e.getSource() == getButton) {
             input1 = textField1.getText();
             input2 = textField2.getText();
-            if ((isValidInput(input1) == false) || (isValidInput(input2) == false)) {JOptionPane.showMessageDialog(jFrame, "Invalid input. Please enter valid integer values.", "Invalid Input", JOptionPane.ERROR_MESSAGE);}
+            if ((!isValidInput(input1)) || (!isValidInput(input2))) {JOptionPane.showMessageDialog(jFrame, "Invalid input. Please enter valid integer values.", "Invalid Input", JOptionPane.ERROR_MESSAGE);}
             int min = Integer.parseInt(input1);
             int max = Integer.parseInt(input2);
             if (min > max) {JOptionPane.showMessageDialog(jFrame, "Invalid input. Min value cannot be bigger than max.", "Invalid Input", JOptionPane.ERROR_MESSAGE);}
@@ -476,8 +476,10 @@ public class ConverterApp implements ActionListener {
 
             if ((binary_data.isAlive()) || (octal_data.isAlive()) || (hexadecimal_data.isAlive())) {
                 binary_data.stop(); octal_data.stop(); hexadecimal_data.stop();
-                binary_data.start(); octal_data.start(); hexadecimal_data.start();
-            } else {binary_data.start(); octal_data.start(); hexadecimal_data.start();}
+            }
+            binary_data.start();
+            octal_data.start();
+            hexadecimal_data.start();
 
             try {
                 binary_data.join();
@@ -593,8 +595,6 @@ public class ConverterApp implements ActionListener {
     }
 
     //SETTER, GETTER, & MISC
-    public String getInput1() {return this.input1;}
-    public String getInput2() {return this.input2;}
     private int getNumberSystemPicker() {return this.comboBoxNumberSystem;}
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {

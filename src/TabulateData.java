@@ -3,10 +3,9 @@ import java.util.ArrayList;
 public class TabulateData extends Thread {
 
     private Object[][] data;
-    private ArrayList<String> dataTransfer = new ArrayList<>();
-    private String value;
-    private int MIN_NUM, MAX_NUM;
-    private int base;
+    private final ArrayList<String> dataTransfer = new ArrayList<>();
+    private final int MIN_NUM, MAX_NUM;
+    private final int base;
     private int loopCount = 1;
 
     public TabulateData(int base, int min, int max) {
@@ -20,7 +19,7 @@ public class TabulateData extends Thread {
         dataTransfer.clear();
 
         for (int i = MIN_NUM; i <= MAX_NUM; i++) {
-            value = convertDecimalToOther(i, base);
+            String value = convertDecimalToOther(i, base);
             dataTransfer.add(String.format("%d.) %s", loopCount, value));
             loopCount++;
         }
